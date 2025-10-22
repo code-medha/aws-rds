@@ -238,9 +238,9 @@ from psycopg_pool import ConnectionPool
 
  `return activities[0] if activities and activities[0] is not None else []]` will handle error cases that could crash your application:
 
- if only activities[0]  # TypeError: 'NoneType' object is not subscriptable
+- if only activities[0]  # TypeError: 'NoneType' object is not subscriptable
 
- if only activities = None  # returns (None,) if your query returns NULL
+- if only activities = None  # returns (None,) if your query returns NULL
 
 
 ### Writng a SQL Query
@@ -352,6 +352,10 @@ Run the following command to run the docker compose file:
 ```
 $ docker compose -f ./docker-compose.dev.yml up -d --build
 ```
+
+Hurray!!! As you can see the database is connected your application and can read the data.
+
+![](/images/300-local.png)
 
 
 

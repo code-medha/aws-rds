@@ -224,7 +224,7 @@ psycopg[binary, pool]
 from psycopg_pool import ConnectionPool
 ```
 
-### `psycopg` Implementation to Return Activity data as JSON
+### `psycopg` Implementation to Return Activity data
 
 ```
     with pool.connection() as conn:

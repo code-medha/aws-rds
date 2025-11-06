@@ -1,5 +1,11 @@
 import uuid
+import os
 from datetime import datetime, timedelta, timezone
+from psycopg_pool import ConnectionPool
+
+connection_url=os.getenv("CONNECTION_URL")
+pool = ConnectionPool(connection_url)
+
 class CreateActivity:
   def run(message, user_handle, ttl):
     model = {
@@ -40,12 +46,38 @@ class CreateActivity:
         'message': message
       }   
     else:
+      expires_at = (now + ttl_offset)
+
+     
+      with pool.connection() as conn:
+          with conn.cursor() as cur:
+              cur.execute(
+                  "SELECT uuid, display_name FROM public.users WHERE handle = %s LIMIT 1",
+                  [user_handle]
+              )
+              user_row = cur.fetchone()
+              if user_row is None:
+                  model['errors'] = ['user_handle_not_found']
+                  model['data'] = { 'handle': user_handle, 'message': message }
+                  return model
+
+              user_uuid, display_name = user_row[0], user_row[1]
+
+              insert_sql = """
+                  INSERT INTO public.activities (user_uuid, message, expires_at)
+                  VALUES (%s, %s, %s)
+                  RETURNING uuid, message, created_at, expires_at
+              """
+              cur.execute(insert_sql, [user_uuid, message, expires_at])
+              result = cur.fetchone()
+              conn.commit()
+
       model['data'] = {
-        'uuid': uuid.uuid4(),
-        'display_name': 'Andrew Brown',
-        'handle':  user_handle,
-        'message': message,
-        'created_at': now.isoformat(),
-        'expires_at': (now + ttl_offset).isoformat()
+          'uuid': result[0],
+          'display_name': display_name,
+          'handle': user_handle,
+          'message': result[1],
+          'created_at': result[2].isoformat(),
+          'expires_at': result[3].isoformat()
       }
-    return model
+      return model

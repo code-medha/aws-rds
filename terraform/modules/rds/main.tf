@@ -20,6 +20,10 @@ resource "aws_db_subnet_group" "cruddur" {
   }
 }
 
+data "http" "my_ip" {
+  url = "https://checkip.amazonaws.com"
+  
+}
 
 resource "aws_db_instance" "cruddur_db_instance" {
   identifier                            = "cruddur-db-instance"
@@ -57,7 +61,7 @@ resource "aws_security_group" "cruddur-sg" {
 
 resource "aws_vpc_security_group_ingress_rule" "allow-inbound-postgres" {
   security_group_id = aws_security_group.cruddur-sg.id
-  cidr_ipv4 = "0.0.0.0/0"  #var.vpc_cidr_block
+  cidr_ipv4 = "${chomp(data.http.my_ip.response_body)}/32" #var.vpc_cidr_block
   from_port = 5432
   to_port = 5432
   ip_protocol = "tcp"

@@ -1,0 +1,11 @@
+#!/usr/bin/bash
+
+ENDPOINT=$(aws rds describe-db-instances \
+    --db-instance-identifier cruddur \
+    --query 'DBInstances[0].Endpoint.Address' \
+    --output text)
+
+# Replace everything between @ and :5432
+sed -i.bak "s/@[^:]*/@$ENDPOINT/" .env.prod
+
+

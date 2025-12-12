@@ -1,6 +1,6 @@
 output "public_subnet_id" {
   description = "IDs of the public subnets"
-  value       = [aws_subnet.cruddur-public-subnet-one.id, aws_subnet.cruddur-public-subnet-two.id]
+  value       = [for subnet in aws_subnet.public : subnet.id]
 }
 
 output "vpc_id_cruddur" {

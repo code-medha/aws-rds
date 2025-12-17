@@ -605,35 +605,70 @@ cidr_ipv4 = "${chomp(data.http.my_ip.response_body)}/32"
 
 ## Variable & Local Flow (How Values Move Around)
 
-Here is the conceptual flow of configuration in this project:
+Here is the visual representation of how variables flow:
 
-1. **Root variables** (`variables.tf`)
-2. **Root locals** (`locals.tf`)
-3. **Root modules** (`main.tf`) – pass values into:
-   - `modules/vpc`
-   - `modules/rds`
-4. **Module variables** (`modules/*/variables.tf`)
-5. **Module resources** (`modules/*/main.tf`)
-
-
-Root variables (project_name, environment)
+```
+Root variables
         │
         ▼
 Root locals.tf:
-  name_prefix = "${var.project_name}-${var.environment}"
         │
         ▼
 Root main.tf:
-  module "vpc" {
-    name_prefix = local.name_prefix
-  }
-        │  (value: "cruddur-dev")
-        ▼
-VPC module variables.tf:
-  variable "name_prefix"
         │
         ▼
-VPC module main.tf:
-  var.name_prefix used in tags, names, etc.
+VPC/RDS module variables.tf:
+        │
+        ▼
+VPC/RDS module main.tf:
+
+```  
 
 ------
+
+
+## `variables.tf` vs `terraform.tfvars`
+
+Defaults in `variables.tf` should only be used for safe, environment-agnostic values.
+For environment-specific, cost-impacting, or security-sensitive inputs, defaults should be removed and values must be explicitly provided via `terraform.tfvars` or CI/CD to avoid accidental infrastructure changes.
+
+**Purpose of variables.tf**
+
+- Defines what inputs exist
+
+- Defines type constraints
+
+- Adds descriptions
+
+- Optionally provides safe defaults
+
+- **It does not represent a specific environment.**
+
+**Purpose of terraform.tfvars**
+
+- Supplies environment-specific values
+
+- Keeps secrets & configs out of code
+
+- Overrides defaults from variables.tf
+
+- **Makes configs reusable across environments**
+
+
+## Precedence Order of `terraform.tfvars`
+
+Terraform resolves variables in this order (last wins):
+
+- CLI -var
+
+- CLI -var-file
+
+- terraform.tfvars
+
+- *.auto.tfvars
+
+- Environment variables (TF_VAR_*)
+
+- default in variables.tf
+
+Terraform variable precedence follows a last-wins model: defaults are lowest priority, then environment variables, auto tfvars, terraform.tfvars, CLI var-files, and finally CLI -var, which has the highest precedence.

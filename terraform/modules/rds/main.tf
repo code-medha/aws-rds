@@ -16,7 +16,7 @@ resource "aws_db_subnet_group" "cruddur" {
   name       = "cruddur-subnet-group"
   subnet_ids = var.subnet_ids
   tags = {
-    Name = "cruddur-subnet-group"
+    Name = "${var.name_prefix}-db-sg"
   }
 }
 
@@ -26,27 +26,27 @@ data "http" "my_ip" {
 }
 
 resource "aws_db_instance" "cruddur_db_instance" {
-  identifier                            = "cruddur-db-instance"
-  instance_class                        = "db.t3.micro"
-  engine                                = "postgres"
-  engine_version                        = "14.15"
+  identifier                            = var.db_identifier
+  instance_class                        = var.db_instance_class
+  engine                                = var.db_engine
+  engine_version                        = var.db_engine_version
   username                              = data.aws_ssm_parameter.db_username.value
   password                              = data.aws_ssm_parameter.db_password.value
-  allocated_storage                     = 20
-  availability_zone                     = "us-east-1a"
-  backup_retention_period               = 0
+  allocated_storage                     = var.allocated_storage
+  availability_zone                     = var.aws_region
+  backup_retention_period               = var.backup_retention_period
   port                                  = 5432
-  multi_az                              = false
+  multi_az                              = var.multi_az
   db_name                               = data.aws_ssm_parameter.db_name.value
   storage_type                          = "gp2"
-  publicly_accessible                   = true
+  publicly_accessible                   = var.publicly_accessible
   storage_encrypted                     = true
   performance_insights_enabled          = true
   performance_insights_retention_period = 7
-  deletion_protection                   = false
+  deletion_protection                   = var.deletion_protection
   db_subnet_group_name                  = aws_db_subnet_group.cruddur.name
   vpc_security_group_ids                = [aws_security_group.cruddur-sg.id]
-  skip_final_snapshot                   = true
+  skip_final_snapshot                   = var.skip_snapshot
 }
 
 resource "aws_security_group" "cruddur-sg" {
@@ -55,7 +55,7 @@ resource "aws_security_group" "cruddur-sg" {
   vpc_id = var.vpc_id
 
   tags = {
-    Name = "cruddur security group"
+    Name = "${var.name_prefix}-sg"
   }  
 }
 

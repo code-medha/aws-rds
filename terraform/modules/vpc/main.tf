@@ -6,7 +6,7 @@ resource "aws_vpc" "cruddur-vpc" {
   enable_dns_hostnames = var.enable_dns_hostnames
   
   tags = {
-    Name = "${local.name_prefix}-vpc"
+    Name = "${var.name_prefix}-vpc"
   }
 }
 
@@ -17,7 +17,7 @@ resource "aws_internet_gateway" "cruddur-igw" {
   vpc_id = aws_vpc.cruddur-vpc.id
   
   tags = {
-    Name = "${local.name_prefix}-igw"
+    Name = "${var.name_prefix}-igw"
   }
 }
 
@@ -27,7 +27,7 @@ resource "aws_route_table" "public" {
   vpc_id = aws_vpc.cruddur-vpc.id
   
   tags = {
-    Name = "${local.name_prefix}-public-rt"
+    Name = "${var.name_prefix}-public-rt"
   }
 }
 
@@ -51,7 +51,7 @@ resource "aws_subnet" "public" {
   map_public_ip_on_launch = true
 
   tags = {
-    Name = "${local.name_prefix}-public-subnet-${substr(each.key, -1, 1)}"
+    Name = "${var.name_prefix}-public-subnet-${substr(each.key, -1, 1)}"
   }
   
 }

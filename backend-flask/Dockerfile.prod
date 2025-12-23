@@ -1,4 +1,6 @@
-FROM python:3.10-slim-buster
+ARG ECR_REGISTRY
+
+FROM ${ECR_REGISTRY}
 
 WORKDIR /backend-flask
 

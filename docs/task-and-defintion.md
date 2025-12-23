@@ -1,6 +1,6 @@
 ## ECS Task Role vs ECS Execution Role - Deep Dive
 
-When I started learning ECS through the AWS UI, I came across two fields: Task Execution Role and Task Role. I was confused about why ECS needs two roles and what each one does. After reading the AWS documentation, these are my learnings.
+When I started learning ECS Task Definitions, I came across two fields: Task Execution Role and Task Role. I was confused about why ECS needs two roles and what each one does. After reading the AWS documentation, these are my learnings.
 
 What problem do these two roles solve?
 

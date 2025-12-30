@@ -7,13 +7,20 @@ services:
       dockerfile: Dockerfile.prod
     ports:
       - "5000:5000"
-    volumes:
-      - ./backend-flask:/backend-flask
+    # No volume mounts in production - code is baked into the image
+    # Only use volumes for data persistence (databases, logs, etc.)
   frontend-react-js:
     env_file:
       - ./frontend-react-js/.env
-    build: ./frontend-react-js
+    build:
+      context: ./frontend-react-js
+      dockerfile: Dockerfile.prod
+      args:
+        - REACT_APP_BACKEND_URL=${REACT_APP_BACKEND_URL}
+        - REACT_APP_AWS_PROJECT_REGION=${REACT_APP_AWS_PROJECT_REGION}
+        - REACT_APP_AWS_COGNITO_REGION=${REACT_APP_AWS_COGNITO_REGION}
+        - REACT_APP_AWS_USER_POOLS_ID=${REACT_APP_AWS_USER_POOLS_ID}
+        - REACT_APP_CLIENT_ID=${REACT_APP_CLIENT_ID}
     ports:
       - "3000:3000"
-    volumes:
-      - ./frontend-react-js:/frontend-react-js
+    # No volume mounts in production - code is baked into the image

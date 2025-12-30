@@ -1,0 +1,57 @@
+#!/usr/bin/bash
+
+
+[ -f .env ] && source .env
+
+cd terraform || exit 1
+
+
+# Get all ECR outputs as JSON and store in a variable named ECR_OUTPUTS
+ECR_OUTPUTS=$(terraform output -json)
+
+# Store the ECR repository URLs in variables
+CRUDDUR_PYTHON_REPO=$(echo $ECR_OUTPUTS | jq -r '.cruddur_python_repository_url.value')
+BACKEND_FLASK_REPO=$(echo $ECR_OUTPUTS | jq -r '.backend_flask_repository_url.value')
+FRONTEND_REACT_JS_REPO=$(echo $ECR_OUTPUTS | jq -r '.frontend_react_js_repository_url.value')
+
+cd ../backend-flask/
+
+aws ecr get-login-password --region $AWS_DEFAULT_REGION | docker login --username AWS --password-stdin "$AWS_ACCOUNT_ID.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com"
+
+
+# Build, tag and push cruddur-python image
+
+docker pull python:3.10-slim-buster
+
+
+docker tag python:3.10-slim-buster $CRUDDUR_PYTHON_REPO:3.10-slim-buster
+
+docker push $CRUDDUR_PYTHON_REPO:3.10-slim-buster
+
+# Build, tag and push backend-flask image
+
+docker build -f Dockerfile.prod -t backend-flask .
+
+docker tag backend-flask:latest $BACKEND_FLASK_REPO:latest
+
+docker push $BACKEND_FLASK_REPO:latest
+
+# Build, tag and push frontend-react-js image
+
+cd ../frontend-react-js
+
+docker build \
+--build-arg REACT_APP_BACKEND_URL="$REACT_APP_BACKEND_URL" \
+--build-arg REACT_APP_AWS_PROJECT_REGION="$AWS_DEFAULT_REGION" \
+--build-arg REACT_APP_AWS_COGNITO_REGION="$AWS_DEFAULT_REGION" \
+--build-arg REACT_APP_AWS_USER_POOLS_ID="$REACT_APP_AWS_USER_POOLS_ID" \
+--build-arg REACT_APP_CLIENT_ID="$REACT_APP_CLIENT_ID" \
+-t frontend-react-js \
+-f Dockerfile.prod \
+.
+
+docker tag frontend-react-js:latest $FRONTEND_REACT_JS_REPO:latest
+
+docker push $FRONTEND_REACT_JS_REPO:latest
+
+docker logout "$AWS_ACCOUNT_ID.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com"

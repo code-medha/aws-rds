@@ -4,6 +4,9 @@
 
 # Docker
 .docker
+.dockerignore
+Dockerfile
+Dockerfile.*
 
 # Python
 app/__pycache__/
@@ -14,17 +17,17 @@ app/*/*/*/__pycache__/
 .venv/
 venv/
 
+# Environment files - be explicit
 .env
-.env.*
-
+.env.prod
+.env.dev
+.env.test
+.env.local
+.env.*.local
+# Allow .env.example for reference
+!.env.example
 
 __pycache__/
 *.pyc
 *.pyo
 *.pyd
-
-
-# Terraform
-.terraform/
-.terraform.lock.hcl
-terraform/

@@ -40,13 +40,28 @@ Create a log group named `cruddur` with 1 day retention setting.
 
 ## Create an ECR Repo for Backend-Flask
 
+How-to
+
 1. $ aws ecr create-repository \
   --repository-name backend-flask \
   --image-tag-mutability MUTABLE
 
 2. $ docker build -f Dockerfile.prod -t backend-flask . 
 
-3. $ docker tag backend-flask:latest 257394477950.dkr.ecr.us-east-1.amazonaws.com/backend-flask:latest
+3. $ docker tag backend-flask:latest <>.dkr.ecr.us-east-1.amazonaws.com/backend-flask:latest
 
-4. $ docker push 257394477950.dkr.ecr.us-east-1.amazonaws.com/backend-flask:latest
+4. $ docker push <>.dkr.ecr.us-east-1.amazonaws.com/backend-flask:latest
 
+## Create an ECR Repo for frontend-react-js
+
+How-to
+
+1. $ aws ecr create-repository \
+  --repository-name backend-flask \
+  --image-tag-mutability MUTABLE
+
+2. $ docker build -f Dockerfile.prod -t frontend-react-js .
+
+3. $ docker tag frontend-react-js:latest <>.dkr.ecr.us-east-1.amazonaws.com/frontend-react-js:latest
+
+4. $ docker push <>.dkr.ecr.us-east-1.amazonaws.com/frontend-react-js:latest

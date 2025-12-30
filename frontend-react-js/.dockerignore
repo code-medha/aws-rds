@@ -1,0 +1,43 @@
+# Git
+.git
+.gitignore
+
+# Docker
+.docker
+.dockerignore
+Dockerfile
+Dockerfile.*
+
+# Python
+app/__pycache__/
+app/*/__pycache__/
+app/*/*/__pycache__/
+app/*/*/*/__pycache__/
+.env/
+.venv/
+venv/
+
+# Node.js
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.npm
+.yarn
+build/
+dist/
+
+# Environment files - be explicit
+.env
+.env.prod
+.env.dev
+.env.test
+.env.local
+.env.*.local
+# Allow .env.example for reference
+!.env.example
+
+__pycache__/
+*.pyc
+*.pyo
+*.pyd

@@ -4,7 +4,7 @@ While the frontend requires a multi-stage build to transform React code into sta
 
 For development environments, we use a development Dockerfile that includes the `--reload` flag, which enables Flask's auto-reloader to restart the server when code changes are detected. While this is convenient for development, it's not suitable for production.
 
-**Why is the development setup unsuitable for production?**
+Why is the development setup unsuitable for production?
 
 - **Security**: The `--reload` flag watches for file changes, which is unnecessary in production and adds overhead.
 - **Performance**: Auto-reload functionality consumes resources and can cause brief service interruptions.
@@ -55,16 +55,16 @@ EXPOSE 5000
 CMD [ "python3", "-m", "flask", "run", "--host=0.0.0.0", "--port=5000" ]
 ```
 
-### Understanding Each Component
 
-#### **Why use an ECR base image instead of Docker Hub?**
+
+### Why use an ECR base image instead of Docker Hub?
 
 The production Dockerfile references a Python base image from ECR:
 ```
 FROM 257394477950.dkr.ecr.us-east-1.amazonaws.com/cruddur-python:3.10-slim-buster
 ```
 
-**Why pull from ECR instead of Docker Hub?**
+Why pull from ECR instead of Docker Hub?
 
 - **Reliability**: Eliminates Docker Hub as a single point of failure. If Docker Hub experiences downtime or rate limits, your builds won't fail.
 - **AWS integration**: ECR integrates seamlessly with ECS, IAM, and other AWS services.
@@ -74,7 +74,7 @@ FROM 257394477950.dkr.ecr.us-east-1.amazonaws.com/cruddur-python:3.10-slim-buste
 
 The base image (`cruddur-python:3.10-slim-buster`) should be pre-pushed to ECR before building application images. This is a one-time setup that ensures all subsequent builds are independent of Docker Hub.
 
-#### **Layer Caching Optimization**
+### Layer Caching Optimization
 
 The Dockerfile follows the same layer caching strategy as the frontend:
 
@@ -84,21 +84,21 @@ RUN pip3 install --no-cache-dir -r requirements.txt
 COPY . .
 ```
 
-**How it works:**
+How it works:
 1. First, only `requirements.txt` is copied into the image.
 2. Dependencies are installed based on that file.
 3. Then, the rest of the application code is copied.
 
-**Why this matters:**
+Why this matters:
 - If only application code changes (not dependencies), Docker reuses the cached layer containing installed Python packages.
 - This significantly speeds up builds because installing Python packages is often the slowest step.
 - Without this optimization, every code change would trigger a full dependency reinstall.
 
-#### **Why use `--no-cache-dir` with pip?**
+### Why use `--no-cache-dir` with pip?
 
 The `--no-cache-dir` flag tells pip not to store downloaded packages in its cache directory.
 
-**Why disable pip's cache in production images?**
+Why disable pip's cache in production images?
 
 - **Image size reduction**: pip's cache can be several hundred MBs. By disabling it, the final image is smaller.
 - **One-time cost**: The cache is only useful if you're rebuilding frequently. In production, you typically build once and deploy.
@@ -107,7 +107,7 @@ The `--no-cache-dir` flag tells pip not to store downloaded packages in its cach
 
 The trade-off is that subsequent builds on the same machine might be slightly slower (packages need to be downloaded again), but this is acceptable for production builds where image size and security are priorities.
 
-#### **Why set `PYTHONUNBUFFERED=1`?**
+### **Why set `PYTHONUNBUFFERED=1`?**
 
 ```dockerfile
 ENV PYTHONUNBUFFERED=1
@@ -115,7 +115,7 @@ ENV PYTHONUNBUFFERED=1
 
 Python buffers stdout and stderr by default, which means output is held in memory until the buffer is full or the program exits.
 
-**Why disable Python output buffering in containers?**
+Why disable Python output buffering in containers?
 
 - **Real-time logging**: Without buffering, logs appear immediately in CloudWatch Logs or container logs, making debugging easier.
 - **Container orchestration**: ECS, Kubernetes, and other orchestrators rely on stdout/stderr for logging. Buffered output can delay log visibility.
@@ -124,7 +124,7 @@ Python buffers stdout and stderr by default, which means output is held in memor
 
 This is especially important in production where you need immediate visibility into application behavior.
 
-#### **Why remove the `--reload` flag?**
+### Why remove the `--reload` flag?
 
 The development Dockerfile includes `--reload` in the CMD:
 ```dockerfile
@@ -136,7 +136,7 @@ The production Dockerfile removes it:
 CMD [ "python3", "-m", "flask", "run", "--host=0.0.0.0", "--port=5000" ]
 ```
 
-**Why not use auto-reload in production?**
+### Why not use auto-reload in production?**
 
 - **Stability**: Production code should be stable and tested. Auto-reload suggests code might change, which shouldn't happen in production.
 - **Performance**: The reload mechanism adds overhead and can cause brief service interruptions.
@@ -144,7 +144,7 @@ CMD [ "python3", "-m", "flask", "run", "--host=0.0.0.0", "--port=5000" ]
 - **Resource usage**: Auto-reload consumes CPU and memory resources that could be used for serving requests.
 - **Best practices**: Production applications should be deployed through proper CI/CD pipelines, not through file watching.
 
-#### **Why set `FLASK_ENV=production`?**
+### **Why set `FLASK_ENV=production`?**
 
 ```dockerfile
 ENV FLASK_ENV=production

@@ -32,7 +32,7 @@ Why it's effective:
 
 Distroless images contain only your application and its runtime dependencies. They don't include package managers, shells, or other programs you'd find in a standard Linux distribution.
 
-**Why use distroless?**
+Why use distroless?
 - **Security**: No shell means attackers can't easily get shell access even if they compromise your application.
 - **Size**: Smaller base images because they exclude unnecessary OS components.
 - **Simplicity**: Forces you to include only what's absolutely necessary.
@@ -94,18 +94,19 @@ The first stage (`FROM node:16.18 AS build`) is where all the compilation happen
 3. **Layer caching optimization**: By copying `package*.json` first and running `npm install` before copying the rest of the code, Docker can cache the dependency installation layer. This means if only source code changes, Docker reuses the cached `node_modules` layer, significantly speeding up builds.
 4. **Build process**: `npm run build` compiles React into static HTML, CSS, and JavaScript files in the `build/` directory.
 
-### **Why use ARG and ENV together?**
+Why use ARG and ENV together?
+
 React applications read environment variables at **build time**, not runtime. When you run `npm run build`, React's build process embeds environment variable values directly into the compiled JavaScript files. This means:
 
 - **ARG**: Receives values from the build command (e.g., `docker build --build-arg REACT_APP_BACKEND_URL=...`).
 - **ENV**: Makes those values available as environment variables during the build process so React can access them.
 - **Important**: You cannot use ECS task definition environment variables for React frontends because the values are already baked into the JavaScript files at build time. You must pass them as build arguments.
 
-### **Why do I need nginx? Why can't I serve the React application directly with Node.js?**
+Why do I need nginx? Why can't I serve the React application directly with Node.js?
 
 After running `npm run build`, React becomes a collection of **static files** (HTML, CSS, JavaScript). These files don't need Node.js to run - they're just files that need to be served by a web server.
 
-**Why nginx specifically?**
+Why nginx specifically?
 
 - **Performance**: nginx is highly optimized for serving static content and can handle thousands of concurrent connections efficiently.
 - **Size**: The nginx:alpine image is much smaller than keeping Node.js in the production image.
@@ -123,7 +124,7 @@ The second stage (`FROM nginx:1.23.3-alpine`) creates the final production image
 
 ---
 
-### Nginx Configuration
+## Nginx Configuration
 
 Since I'm using nginx to serve the React application, I need to provide a configuration file that tells nginx how to serve the static files. I created `frontend-react-js/nginx.conf`:
 

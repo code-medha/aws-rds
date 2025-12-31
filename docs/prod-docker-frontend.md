@@ -2,15 +2,15 @@
 
 For development environments, we use `npm start`, which runs a development server that serves files dynamically with hot-reload capabilities and includes dev tools and source maps. While this is perfect for development, all these features significantly increase the Docker image size.
 
-> **Why does image size matter in production?**
->
-> Smaller Docker images are crucial for production environments for several reasons:
->
-> - **Faster deployments**: Smaller images transfer faster over the network, reducing deployment time, especially important when pulling images from ECR to ECS tasks across multiple availability zones.
-> - **Reduced storage costs**: ECR charges based on storage, so smaller images mean lower costs.
-> - **Improved security**: Smaller images have a smaller attack surface - fewer packages mean fewer potential vulnerabilities.
-> - **Better resource utilization**: Smaller images consume less disk space on ECS hosts, allowing more tasks to run on the same infrastructure.
-> - **Faster container startup**: Less data to extract means containers start faster, improving application responsiveness.
+**Why does image size matter in production?**
+
+Smaller Docker images are crucial for production environments for several reasons:
+
+- **Faster deployments**: Smaller images transfer faster over the network, reducing deployment time, especially important when pulling images from ECR to ECS tasks across multiple availability zones.
+- **Reduced storage costs**: ECR charges based on storage, so smaller images mean lower costs.
+- **Improved security**: Smaller images have a smaller attack surface - fewer packages mean fewer potential vulnerabilities.
+- **Better resource utilization**: Smaller images consume less disk space on ECS hosts, allowing more tasks to run on the same infrastructure.
+- **Faster container startup**: Less data to extract means containers start faster, improving application responsiveness.
 
 ## How to Reduce Image Size?
 

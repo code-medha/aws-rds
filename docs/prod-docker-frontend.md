@@ -20,11 +20,11 @@ There are several strategies to reduce Docker image size:
 
 Multi-stage builds allow you to use multiple `FROM` statements in a single Dockerfile. Each `FROM` instruction starts a new build stage. You can selectively copy artifacts from one stage to another, leaving behind everything you don't need in the final image.
 
-**How it works:**
+How it works:
 - **Build stage**: Contains all the build tools (Node.js, npm, source code, node_modules) needed to compile your application.
 - **Production stage**: Contains only the runtime dependencies and the compiled output.
 
-**Why it's effective:**
+Why it's effective:
 - The final image doesn't include Node.js, npm, source code, or development dependencies - only the compiled static files and a lightweight web server.
 - This can reduce image size from several hundred MBs to just tens of MBs.
 

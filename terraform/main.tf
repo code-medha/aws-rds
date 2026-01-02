@@ -1,11 +1,11 @@
-# # VPC Module
-# module "vpc" {
-#   source = "./modules/vpc"
-#   name_prefix = local.name_prefix
-#   vpc_cidr_block = var.vpc_cidr_block
-#   public_subnets = var.public_subnets
+# VPC Module
+module "vpc" {
+  source = "./modules/vpc"
+  name_prefix = local.name_prefix
+  vpc_cidr_block = var.vpc_cidr_block
+  public_subnets = var.public_subnets
 
-# }
+}
 
 # # RDS Module
 # module "rds" {
@@ -39,4 +39,28 @@ module "ecr" {
   image_tag_mutability = var.image_tag_mutability
 }
 
+# Application load balancer
+module "alb" {
+  source = "./modules/alb"
+  vpc_id = module.vpc.vpc_id_cruddur
+  subnet_ids = module.vpc.public_subnet_id
+  name_prefix = local.name_prefix
+  environment = local.environment
+
+  depends_on = [module.vpc]
+  
+}
+
+# Elastic Container Service
+module "ecs" {
+  source = "./modules/ecs"
+  vpc_id = module.vpc.vpc_id_cruddur
+  subnet_ids = module.vpc.public_subnet_id
+  alb_security_group_id = module.alb.alb_security_group_id_cruddur
+  name_prefix = local.name_prefix
+  environment = local.environment
+
+  depends_on = [module.vpc, module.alb]
+  
+}
 

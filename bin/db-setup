@@ -1,0 +1,43 @@
+#!/usr/bin/bash
+
+
+set -e
+
+[ -f .env ] && source .env
+
+
+#1
+# "$0" -> This is the script's path/name.
+# If you run ./bin/db-setup, then $0 = ./bin/db-setup
+# If you run /home/system-name/Documents/aws-rds/bin/db-setup, then 
+# $0 = /home/system-name/Documents/aws-rds/bin/db-setup
+
+#2
+# dirname "$0" -> Gets the directory part of the path.
+# If $0 = ./bin/db-setup, then dirname returns ./bin
+# If $0 = /home/system-name/Documents/aws-rds/bin/db-setup, 
+# then dirname returns /home/system-name/Documents/aws-rds/bin
+
+
+#3
+#realpath "$(dirname "$0")" -> Converts the directory to an absolute path.
+#If dirname "$0" = ./bin, then realpath converts it to /home/system-name/Documents/aws-rds/bin (absolute path)
+# If dirname "$0" = bin, then realpath converts it to /home/system-name/Documents/aws-rds/bin (absolute path)
+SCRIPT_DIR="$(realpath "$(dirname "$0")")"
+
+# dirname "$SCRIPT_DIR" -> Gets the parent directory.
+# If $SCRIPT_DIR = /home/system-name/Documents/aws-rds/bin
+# Then dirname returns /home/system-name/Documents/aws-rds (the parent directory)
+
+PROJECT_ROOT="$(dirname "$SCRIPT_DIR")"
+
+schema_path="$PROJECT_ROOT/backend-flask/db/schema-prod.sql"
+
+
+echo "schema_path: $schema_path"
+
+psql $CONNECTION_URL -f $schema_path
+
+echo "DB setup complete"
+
+psql $CONNECTION_URL

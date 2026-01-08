@@ -16,6 +16,10 @@ resource "aws_security_group" "cruddur-alb-sg" {
   description = "ALB security group"
   vpc_id      = var.vpc_id
 
+  tags = {
+    Name = "${var.name_prefix}-load-balancer-sg"
+  }
+
 }
 
 resource "aws_vpc_security_group_ingress_rule" "allow-inbound-alb-http" {

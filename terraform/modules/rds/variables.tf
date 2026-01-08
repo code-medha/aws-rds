@@ -19,6 +19,11 @@ variable "name_prefix" {
     type = string
 }
 
+variable "ecs_service_security_group_id" {
+  description = "ID of the ECS service security group"
+  type        = string
+}
+
 variable "db_identifier" {
     description = "Database identifier"
     type = string

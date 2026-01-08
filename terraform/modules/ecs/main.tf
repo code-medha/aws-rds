@@ -3,6 +3,10 @@ resource "aws_security_group" "cruddur-service-sg" {
   description = "ECS service security group"
   vpc_id      = var.vpc_id
 
+  tags = {
+    Name = "${var.name_prefix}-ecs-security-group"
+  }
+
 }
 
 resource "aws_vpc_security_group_ingress_rule" "allow-inbound-alb-backend" {

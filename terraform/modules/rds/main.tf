@@ -50,7 +50,7 @@ resource "aws_db_instance" "cruddur_db_instance" {
 }
 
 resource "aws_security_group" "cruddur-sg" {
-  name = "cruddur-sg"
+  name = "cruddur-postgres-sg"
   description = "allow postgress access"
   vpc_id = var.vpc_id
 
@@ -64,6 +64,15 @@ resource "aws_vpc_security_group_ingress_rule" "allow-inbound-postgres" {
   cidr_ipv4 = "${chomp(data.http.my_ip.response_body)}/32" #var.vpc_cidr_block
   from_port = 5432
   to_port = 5432
+  ip_protocol = "tcp"
+  
+}
+
+resource "aws_vpc_security_group_ingress_rule" "ecs-inbound-postgres" {
+  security_group_id = aws_security_group.cruddur-sg.id
+  from_port = 5432
+  to_port = 5432
+  referenced_security_group_id = var.ecs_service_security_group_id
   ip_protocol = "tcp"
   
 }

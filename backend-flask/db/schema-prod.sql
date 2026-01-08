@@ -24,3 +24,17 @@ CREATE TABLE public.activities (
   expires_at TIMESTAMP,
   created_at TIMESTAMP default current_timestamp NOT NULL
 );
+
+INSERT INTO public.users (display_name, handle, email, cognito_user_id)
+VALUES
+  ('Darshan Dev', 'darshandev' , 'ddev@gmail.com', 'MOCK'),
+  ('Andrew Bayko', 'bayko' , 'abayko@gmail.com', 'MOCK'),
+  ('Andrew Brown', 'andrewbrown' , 'abrown@gmail.com', 'MOCK');
+
+INSERT INTO public.activities (user_uuid, message, expires_at)
+VALUES
+  (
+    (SELECT uuid from public.users WHERE users.handle = 'andrewbrown' LIMIT 1),
+    'This was imported from AWS RDS Postgres!',
+    current_timestamp + interval '10 day'
+  )

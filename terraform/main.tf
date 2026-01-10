@@ -32,13 +32,13 @@ module "rds" {
   depends_on = [module.vpc]
 }
 
-# ECR Module
-module "ecr" {
-  source = "./modules/ecr"
-  name_prefix = local.name_prefix
-  environment = local.environment
-  image_tag_mutability = var.image_tag_mutability
-}
+# # ECR Module
+# module "ecr" {
+#   source = "./modules/ecr"
+#   name_prefix = local.name_prefix
+#   environment = local.environment
+#   image_tag_mutability = var.image_tag_mutability
+# }
 
 # Application load balancer
 module "alb" {

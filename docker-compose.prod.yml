@@ -11,7 +11,7 @@ services:
     # Only use volumes for data persistence (databases, logs, etc.)
   frontend-react-js:
     env_file:
-      - ./frontend-react-js/.env
+      - ./frontend-react-js/.env.prod
     build:
       context: ./frontend-react-js
       dockerfile: Dockerfile.prod

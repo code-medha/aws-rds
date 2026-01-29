@@ -110,33 +110,33 @@ resource "aws_lb_target_group" "frontend-tg" {
   }
 }
 
-# Temporary listener: Direct HTTP listener on port 3000 for 
-# frontend (for testing, typically removed in production)
-# Listener for Frontend (Port 3000)
-resource "aws_lb_listener" "frontend" {
-  load_balancer_arn = aws_lb.cruddur-alb.arn
-  port              = "3000"
-  protocol          = "HTTP"
+# # Temporary listener: Direct HTTP listener on port 3000 for 
+# # frontend (for testing, typically removed in production)
+# # Listener for Frontend (Port 3000)
+# resource "aws_lb_listener" "frontend" {
+#   load_balancer_arn = aws_lb.cruddur-alb.arn
+#   port              = "3000"
+#   protocol          = "HTTP"
 
-  default_action {
-    type             = "forward"
-    target_group_arn = aws_lb_target_group.frontend-tg.arn
-  }
-}
+#   default_action {
+#     type             = "forward"
+#     target_group_arn = aws_lb_target_group.frontend-tg.arn
+#   }
+# }
 
-# Temporary listener: Direct HTTP listener on port 5000 for 
-# backend (for testing, typically removed in production)
-# Listener for Backend (Port 5000)
-resource "aws_lb_listener" "backend" {
-  load_balancer_arn = aws_lb.cruddur-alb.arn
-  port              = "5000"
-  protocol          = "HTTP"
+# # Temporary listener: Direct HTTP listener on port 5000 for 
+# # backend (for testing, typically removed in production)
+# # Listener for Backend (Port 5000)
+# resource "aws_lb_listener" "backend" {
+#   load_balancer_arn = aws_lb.cruddur-alb.arn
+#   port              = "5000"
+#   protocol          = "HTTP"
 
-  default_action {
-    type             = "forward"
-    target_group_arn = aws_lb_target_group.backend-tg.arn
-  }
-}
+#   default_action {
+#     type             = "forward"
+#     target_group_arn = aws_lb_target_group.backend-tg.arn
+#   }
+# }
 
 # HTTP listener on port 80 that redirects all traffic to HTTPS (port 443)
 # for security

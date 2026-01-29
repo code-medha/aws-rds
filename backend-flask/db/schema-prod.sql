@@ -34,7 +34,7 @@ VALUES
 INSERT INTO public.activities (user_uuid, message, expires_at)
 VALUES
   (
-    (SELECT uuid from public.users WHERE users.handle = 'andrewbrown' LIMIT 1),
+    (SELECT uuid from public.users WHERE users.handle = 'darshandev' LIMIT 1),
     'This was imported from AWS RDS Postgres!',
     current_timestamp + interval '10 day'
   )

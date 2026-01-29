@@ -4,6 +4,7 @@ For development environments, we use `npm start`, which runs a development serve
 
 **Why does image size matter in production?**
 
+
 Smaller Docker images are crucial for production environments for several reasons:
 
 - **Faster deployments**: Smaller images transfer faster over the network, reducing deployment time, especially important when pulling images from ECR to ECS tasks across multiple availability zones.
@@ -94,7 +95,7 @@ The first stage (`FROM node:16.18 AS build`) is where all the compilation happen
 3. **Layer caching optimization**: By copying `package*.json` first and running `npm install` before copying the rest of the code, Docker can cache the dependency installation layer. This means if only source code changes, Docker reuses the cached `node_modules` layer, significantly speeding up builds.
 4. **Build process**: `npm run build` compiles React into static HTML, CSS, and JavaScript files in the `build/` directory.
 
-Why use ARG and ENV together?
+**Why use ARG and ENV together?**
 
 React applications read environment variables at **build time**, not runtime. When you run `npm run build`, React's build process embeds environment variable values directly into the compiled JavaScript files. This means:
 
@@ -102,11 +103,11 @@ React applications read environment variables at **build time**, not runtime. Wh
 - **ENV**: Makes those values available as environment variables during the build process so React can access them.
 - **Important**: You cannot use ECS task definition environment variables for React frontends because the values are already baked into the JavaScript files at build time. You must pass them as build arguments.
 
-Why do I need nginx? Why can't I serve the React application directly with Node.js?
+**Why do I need nginx? Why can't I serve the React application directly with Node.js?**
 
 After running `npm run build`, React becomes a collection of **static files** (HTML, CSS, JavaScript). These files don't need Node.js to run - they're just files that need to be served by a web server.
 
-Why nginx specifically?
+**Why nginx specifically?**
 
 - **Performance**: nginx is highly optimized for serving static content and can handle thousands of concurrent connections efficiently.
 - **Size**: The nginx:alpine image is much smaller than keeping Node.js in the production image.
@@ -196,9 +197,9 @@ http {
 
 **`try_files $uri $uri/ $uri.html /index.html`**: This is crucial for React Router (client-side routing). When a user navigates to a route like `/messages`, nginx first tries to find a file at that path. If it doesn't exist (which is normal for React Router routes), it falls back to serving `index.html`. This allows React Router to handle the routing on the client side.
 
-> **Why is `try_files` important for React Router?**
->
-> React Router uses client-side routing, meaning the routing happens in JavaScript after the page loads. When a user directly accesses `/messages` or refreshes the page, the browser requests that path from the server. Without `try_files`, nginx would return a 404 because there's no actual `/messages` file. By falling back to `index.html`, React loads, and then React Router can handle the routing and display the correct component.
+**Why is `try_files` important for React Router?**
+
+React Router uses client-side routing, meaning the routing happens in JavaScript after the page loads. When a user directly accesses `/messages` or refreshes the page, the browser requests that path from the server. Without `try_files`, nginx would return a 404 because there's no actual `/messages` file. By falling back to `index.html`, React loads, and then React Router can handle the routing and display the correct component.
 
 ---
 

@@ -27,7 +27,8 @@ The scope of AWS Cloud project is to deploy a 3-tier archieture application on A
 
 ## Application Demo
 
-https://raw.githubusercontent.com/code-medha/aws-rds/main/vids/app.mp4
+
+https://github.com/user-attachments/assets/25d4bd7f-0185-474c-b5b6-8ad7c03ddd15
 
 
 ## AWS Services Used

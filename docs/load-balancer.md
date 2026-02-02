@@ -1,174 +1,105 @@
-What problem does a Load Balancer solve? 
+## What Problem Does a Load Balancer Solve?
 
-Imagine this without a load balancer:
+Imagine your frontend calls a single EC2 instance or ECS task by its IP. Without a load balancer, that setup causes real issues.
 
-Your frontend calls one EC2 / ECS task IP
+That instance can go down, get overloaded, or change its IP when you redeploy (especially with ECS/Fargate). The result is downtime, manual traffic management, and no real scalability.
 
-That instance:
+A load balancer sits in front of your instances and addresses this. It distributes traffic, handles failover, and lets you scale without tying clients to a single IP.
 
-Can go down
+---
 
-Can get overloaded
+## What Is AWS ALB?
 
-Changes IP when redeployed (ECS/Fargate)
+AWS Application Load Balancer (ALB) is a Layer 7 load balancer for HTTP and HTTPS. It understands URLs (e.g. `/api`, `/login`), HTTP methods (GET, POST), headers, and hostnames, so you can route traffic by path, host, or other request attributes.
 
-Result:
-Downtime
-Manual traffic management
-No scalability
+---
 
-A load balancer sits in front and solves this.
+## Components of ALB
 
+ALB is built from four main pieces:
 
-What is AWS ALB?
+- **Listener** – how traffic enters the ALB
+- **Listener Rules** – where that traffic is sent
+- **Target Group** – which backends receive the traffic
+- **Targets** – the actual application instances (ECS tasks, EC2, etc.)
 
-AWS Application Load Balancer is a Layer 7 (HTTP/HTTPS) load balancer.
+---
 
-It understands:
+## Listener – How Traffic Enters the ALB
 
-URLs (/api, /login)
+A listener defines the protocol (HTTP or HTTPS) and port (e.g. 80 or 443) on which the ALB accepts traffic. Without at least one listener, the ALB cannot accept traffic at all.
 
-HTTP methods (GET, POST)
+**Example:**
 
-Headers, hostnames
+- HTTP on port 80
+- HTTPS on port 443 (with a TLS certificate for termination at the ALB)
 
-## Compoenents of ALB
+This separates “how traffic arrives” from “which backend handles it” and lets you do TLS termination at the ALB instead of on every backend.
 
-- Listener
-- Listener Rules
-- Target Group
-- Targets
+---
 
+## Listener Rules – Where Traffic Should Go
 
-1️Listener – “How traffic enters ALB”
-What is a Listener?
+Listeners have rules. Each rule says: *if the request matches condition X, send it to target group Y.*
 
-A listener defines:
+Common conditions include:
 
-Protocol: HTTP / HTTPS
+- **Path-based routing** – e.g. `/api/*` → backend API target group
+- **Host-based routing** – e.g. `api.example.com` → backend
+- **Header-based routing** – match on specific headers
 
-Port: 80 / 443
+One ALB can therefore serve many services (e.g. frontend, API, admin) without a separate load balancer per service, which is very useful for microservices.
 
-Example:
+---
 
-HTTP : 80
+## Target Group – Who Receives the Traffic
 
-HTTPS : 443 (with TLS certificate)
-
-Without a listener:
-ALB cannot accept traffic at all.
-
-Problem it solves
-
-Separates traffic entry from backend logic
-
-Enables HTTPS termination (TLS handled at ALB)
-
-
-Listener Rules – “Where traffic should go”
-
-Listeners have rules.
-
-A rule says:
-
-“If traffic matches X → send to Y”
-
-Common rule conditions
-
-Path-based routing
-/api/* → backend
-
-Host-based routing
-api.example.com → backend
-
-Header-based routing
-
-Problem it solves
-
-One ALB → multiple services
-
-No need for separate load balancers per service
-
-This is huge for microservices.
-
-
-Target Group – “Who receives traffic”
-What is a Target Group?
-
-A target group is a logical group of backends.
-
-Targets can be:
-
-EC2 instances
-
-ECS tasks (IP mode)
-
-Lambda functions
+A target group is a logical group of backends. Targets in a group can be EC2 instances, ECS tasks (in IP mode), or Lambda functions.
 
 Each target group has:
 
-Port (e.g., 5000)
+- A **port** (e.g. 5000)
+- A **protocol** (e.g. HTTP)
+- A **health check path** (e.g. `/health`)
 
-Protocol (HTTP)
+The ALB never talks directly to an EC2 instance or ECS task; it always sends traffic through a target group, which keeps routing and health checks consistent.
 
-Health check path (/health)
+---
 
-ALB never talks directly to EC2/ECS
-It always talks via target groups
+## Targets – The Actual Application Instances
 
+Targets are your real workloads: ECS tasks, EC2 instances, or containers. The ALB distributes traffic across all healthy targets in the target group and adjusts automatically when you scale up or down.
 
-Targets – “Actual application instances”
-
-Targets are:
-
-Your ECS tasks
-
-Your EC2 instances
-
-Your containers
-
-ALB:
-
-Distributes traffic across all healthy targets
-
-Automatically adjusts when tasks scale up/down
-
-ECS example (your use case)
+**ECS example (your use case):**
 
 When ECS scales:
 
-New task → auto-registered to target group
+- New tasks are automatically registered to the target group.
+- Stopped tasks are automatically removed.
 
-Stopped task → auto-removed
+You don’t have to manage IPs or registration manually.
 
-No manual IP handling 
+---
 
-Cost of AWS Application Load Balancer (ALB)
+## Cost of AWS Application Load Balancer (ALB)
 
-AWS Application Load Balancer pricing has two main components.
+ALB pricing has two main parts.
 
-Fixed hourly cost (ALB running time)
+### Fixed hourly cost
 
-You pay per hour the ALB exists (even if no traffic).
+You pay for each hour the ALB exists, even if there is no traffic. Approximate typical pricing is around **$0.0225 per hour** per ALB. If the ALB runs all month:
 
-Typical pricing (approx):
+`0.0225 × 24 × 30 ≈ $16–17 / month`
 
-~$0.0225 per hour per ALB
+### LCU (Load Balancer Capacity Units)
 
-If your ALB runs all month:
+Most of the variable cost comes from LCUs. ALB usage is measured in LCUs; your bill is based on the highest of these dimensions (per hour):
 
-0.0225 × 24 × 30 ≈ $16–17 / month
+| Dimension            | What it measures              |
+|----------------------|-------------------------------|
+| New connections      | New TCP connections per second|
+| Active connections   | Concurrent connections        |
+| Processed bytes      | Volume of data processed (GB) |
+| Rule evaluations     | Listener rules evaluated     |
 
-LCU (Load Balancer Capacity Units)
-
-This is where most confusion happens.
-
-ALB pricing is usage-based, measured in LCUs.
-
-An LCU is calculated based on the maximum of these (per hour):
-
-Dimension	What it measures
-New connections	How many new TCP connections/sec
-Active connections	Concurrent connections
-Processed bytes	GBs of data processed
-Rule evaluations	Listener rules checked
+An LCU is calculated from the maximum of these dimensions in that hour, which is where most of the pricing confusion comes from.

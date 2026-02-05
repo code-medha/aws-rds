@@ -129,6 +129,17 @@ For detailed documentation, see:
 I used Amazon ECS with Fargate to run the frontend and backend as separate services, wired to the images stored in ECR. Each task definition uses `awsvpc` networking, CloudWatch logging, and service-specific health checks, and integrated with an Application Load Balancer. Both services are discoverable via ECS Service Connect.
 
 
+For more infromation, see:
+- Task Defintions
+    - [Backend task definition](aws/task-definition/backend-flask.json)
+    - [Frontend task definition](aws/task-definition/frontend-react-js.json)
+
+- Services
+
+    - [Backend ECS service](aws/ecs-service/service-backend.json)
+    - [Frontend ECS service](aws/ecs-service/service-frontend.json)
+
+
 
 
 

@@ -355,4 +355,4 @@ $ docker compose -f ./docker-compose.dev.yml up -d --build
 
 Hurray!!! As you can see the database is connected your application and can read the data.
 
-![](/images/300-local.png)
+![](../../images/300-local.png)

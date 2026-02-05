@@ -140,7 +140,10 @@ For more infromation, see:
     - [Frontend ECS service](aws/ecs-service/service-frontend.json)
 
 
+# What's Next
 
+- Deploy the application on AWS EKS
+- Implement AWS CDK
 
 
 

@@ -4,7 +4,7 @@ Honeycomb.io is a cloud-native observability platform designed to debug and unde
 
 Under the hoods, Honeycomb uses OpenTelemetry (OTel) observability framework that generats, collects, and exports trace data. The following figure explains the simple architecture of Honeycomb.
 
-![honeycomb.io](/images/honeycomb.png)
+![honeycomb.io](../../images/honeycomb.png)
 
 
 ## Adding Automatic Instrumentation in Honeycomb
@@ -103,7 +103,7 @@ Go to your Honeycomb.io and select the environment you created.
 
 Hola! You can see the traces coming up on the Home screen.
 
-![](/images/traces.png)
+![](../../images/traces.png)
 
 Let's understand what each graph provides information:
 
@@ -114,7 +114,7 @@ Span Volume: This is usually a line graph showing number of individual spans rec
 Span Duration: How long each span took to complete, usually in seconds or milliseconds.
 
 The following figure shows the summary of Traces:
-![](/images/trace-summary.png)
+![](../../images/trace-summary.png)
 
 
 ## Simulating Latency and HTTP 500 Error
@@ -152,7 +152,7 @@ SIMULATE_HOME_ERROR: "0"
 ```
 
 Latency Trace:
-![](/images/latency.png)
+![](../../images/latency.png)
 
 when you want to simulate HTTP 500 error, set:
 ```
@@ -161,4 +161,4 @@ SIMULATE_HOME_ERROR: "1"
 ```
 
 HTTP 500 error Trace:
-![](/images/http500error.png)
+![](../../images/http500error.png)

@@ -75,6 +75,6 @@ visit http://localhost:5000/rollbar/test
 
 You should see a crash, and the error will be logged in your Rollbar dashboard under Items.
 
-![Rollbar Dashboard](/images/rollbar.png)
+![Rollbar Dashboard](../../images/rollbar.png)
 
 Bingo! Rollbar is now successfully instrumented with your Flask app.

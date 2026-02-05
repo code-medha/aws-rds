@@ -38,7 +38,7 @@ Go to your browser and enter localhost:5000/api/activities/home
 
 > 5000/api/activities/home - is the API end-point that shows the data
 
-<img src="images/5000.png" alt="Alt text" width="400"/>
+<img src="../../images/5000.png" alt="Backend running on port 5000" width="400"/>
 
 
 To run the frontend application follow these steps:
@@ -50,7 +50,7 @@ npm start
 
 Tada! localhost:3000 automatically opens in the browser.
 
-<img src="images/3000.png" alt="Alt text" width="500"/>
+<img src="../../images/3000.png" alt="Frontend running on port 3000" width="500"/>
 
 
 If you're able to run the backend and frontend successfully, you're ready to containerize the application.
@@ -58,13 +58,13 @@ If you're able to run the backend and frontend successfully, you're ready to con
 Refer to the following links to learn the steps involved in Dockerizing the application and configuring image secuirty scanning:
 
 
-[Backend-dockerization](https://github.com/devops-champ/app-containerization-project/blob/main/_docs/backend-docker.md#dockerize-the-backend-framework)
+[Backend-dockerization](backend-docker.md#dockerize-the-backend-framework)
 
-[Frontend-dockerization](https://github.com/devops-champ/app-containerization-project/blob/main/_docs/frontend-docker.md#dockerize-the-frontend-framework)
+[Frontend-dockerization](frontend-docker.md#dockerize-the-frontend-framework)
 
-[Docker-compose](https://github.com/devops-champ/app-containerization-project/blob/main/_docs/docker-compose.md#docker-compose)
+[Docker-compose](docker-compose.md#docker-compose)
 
-[Container security best practices](https://github.com/devops-champ/app-containerization-project/blob/main/_docs/container-security-best-pactices.md#container-security-best-practices)
+[Container security best practices](container-security-best-pactices.md#container-security-best-practices)
 
 
 **CREDITS** - The source code of this project belongs to AWS Bootcamp by Andrew Brown.

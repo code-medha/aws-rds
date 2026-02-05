@@ -1,8 +1,8 @@
 # AWS Cloud Project
 
-This is not a regular "hello-world" app, it's a near to production grade app that simulates the real-world deployment scenariors.
+This isn’t a “hello-world” app, it’s a near–production-grade setup that mirrors how real applications are lifted from localhost to AWS.
 
-I always wanted to mimck the production-grade setup like how an application from the localhost is lifted and shifted to AWS. So, by taking an app and then deploying it to AWS would make sense to learn the AWS efficiently, because of the fact I will face the real world issues and how I go on to troublshooting them. This project is the accumaltion of all the AWS skills I learnt to deploy an application by simulating the production grade setup.
+I wanted to learn AWS by doing what teams actually do. Take an app, deploy it end-to-end, and run into the same issues they do. By simulating a production-style deployment, I get to face real-world problems and learn how to troubleshoot them. This project is the result of that approach, a 3-tier micro-blogging application deployed on AWS, built step by step from containerization to ECS, with the kind of setup you’d see in a real environment.
 
 ## Understand the Application Stack
 
@@ -12,10 +12,9 @@ This a 3-tier architecture micro-blogging platform application (ephemeral in nat
 - Backend - Python Flask 
 - Feed Conversations - PostgreSQL
 
-
 ## Scope
 
-The scope of AWS Cloud project is to deploy a 3-tier archieture application on AWS ECS.
+The goal of this AWS Cloud project is to deploy this 3-tier application on AWS ECS and demonstrate production-grade practices along the way.
 
 ## High-Level Architecture
 
@@ -31,8 +30,8 @@ https://github.com/user-attachments/assets/25d4bd7f-0185-474c-b5b6-8ad7c03ddd15
 
 ## AWS Services Used
 
-- ECS
-- RDS
+- ECS (Fargate)
+- RDS (PostgresSQL)
 - ECR
 - Cloudwatch
 - Cognito
@@ -104,19 +103,33 @@ Because Lambda’s runtime doesn’t include psycopg2, I created a Lambda layer 
 For detailed documentation, see:
 - [AWS Lambda Post Confirmation](docs/lambda/aws-lambda.md) — Cognito trigger, Lambda handler, and psycopg2 layer setup
 
-## Dockerization for Production Envs
+
+## Production-Grade Docker Images (Frontend & Backend)
+
+After getting the app running locally in containers, I focused on building production-ready Docker images for both the React frontend and Flask backend. 
+
+For the frontend, I learned to use multi-stage builds with nginx to turn the React app into a small, fast static site image, optimized for size, security, and startup time. 
+
+For the backend, I created a separate production Dockerfile that removes dev-only features like `--reload`, switches `FLASK_ENV` to `production`, uses `--no-cache-dir` for smaller images, and pulls its base image from ECR instead of Docker Hub for better reliability and integration with AWS.
+
+For detailed documentation, see:
+- [Production Dockerization (Frontend)](docs/docker-prod/prod-docker-frontend.md) — Multi-stage builds, nginx, and image size optimization
+- [Production Dockerization (Backend)](docs/docker-prod/prod-docker-backend.md) — Production Flask image, ECR base image, and runtime best practices
 
 
 ## ECR Implementation
 
+I implemented ECR as the container registry layer for this project. I learnt how ECS pulls images and how IAM controls access to private registries. I created separate ECR repos for a Python base image, the Flask backend, and the React frontend. Then built, tagged, and pushed production images so ECS can deploy them consistently.
 
-## ECS
+For detailed documentation, see:
+- [ECR Setup + Push Workflow](docs/ecr/ecr.md) — repos for base/app images, Docker login, tag/push, and CloudWatch log group for ECS
 
-### Cluster Creation
+## Application Deployment on Amazon ECS (Fargate)
 
-### Task Defintion
+I used Amazon ECS with Fargate to run the frontend and backend as separate services, wired to the images stored in ECR. Each task definition uses `awsvpc` networking, CloudWatch logging, and service-specific health checks, and integrated with an Application Load Balancer. Both services are discoverable via ECS Service Connect.
 
-### Service Creation
+
+
 
 
 

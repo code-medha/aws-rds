@@ -145,6 +145,8 @@ For more infromation, see:
 - Deploy the application on AWS EKS
 - Implement AWS CDK
 
+**CREDITS** - The source code of this project belongs to AWS Bootcamp by Andrew Brown.
+
 
 
 

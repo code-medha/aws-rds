@@ -101,7 +101,7 @@ I implemented authentication using AWS Cognito and kept the app’s `users` tabl
 Because Lambda’s runtime doesn’t include psycopg2, I created a Lambda layer by building psycopg2 inside a container that matches Lambda’s environment, learning why native dependencies must be built for the same OS and architecture as the runtime.
 
 For detailed documentation, see:
-- [AWS Lambda Post Confirmation](docs/lambda/aws-lambda.md) — Cognito trigger, Lambda handler, and psycopg2 layer setup
+- [AWS Lambda Post Confirmation](docs/lambda/aws-lambda.md) - Cognito trigger, Lambda handler, and psycopg2 layer setup
 
 
 ## Production-Grade Docker Images (Frontend & Backend)
@@ -113,8 +113,8 @@ For the frontend, I learned to use multi-stage builds with nginx to turn the Rea
 For the backend, I created a separate production Dockerfile that removes dev-only features like `--reload`, switches `FLASK_ENV` to `production`, uses `--no-cache-dir` for smaller images, and pulls its base image from ECR instead of Docker Hub for better reliability and integration with AWS.
 
 For detailed documentation, see:
-- [Production Dockerization (Frontend)](docs/docker-prod/prod-docker-frontend.md) — Multi-stage builds, nginx, and image size optimization
-- [Production Dockerization (Backend)](docs/docker-prod/prod-docker-backend.md) — Production Flask image, ECR base image, and runtime best practices
+- [Production Dockerization (Frontend)](docs/docker-prod/prod-docker-frontend.md) - Multi-stage builds, nginx, and image size optimization
+- [Production Dockerization (Backend)](docs/docker-prod/prod-docker-backend.md) - Production Flask image, ECR base image, and runtime best practices
 
 
 ## ECR Implementation
@@ -122,7 +122,7 @@ For detailed documentation, see:
 I implemented ECR as the container registry layer for this project. I learnt how ECS pulls images and how IAM controls access to private registries. I created separate ECR repos for a Python base image, the Flask backend, and the React frontend. Then built, tagged, and pushed production images so ECS can deploy them consistently.
 
 For detailed documentation, see:
-- [ECR Setup + Push Workflow](docs/ecr/ecr.md) — repos for base/app images, Docker login, tag/push, and CloudWatch log group for ECS
+- [ECR Setup](docs/ecr/ecr.md) - repos for base/app images, Docker login, tag/push, and CloudWatch log group for ECS
 
 ## Application Deployment on Amazon ECS (Fargate)
 
